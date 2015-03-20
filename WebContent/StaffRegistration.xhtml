@@ -64,12 +64,10 @@
 				</h:inputText>
 			</h:panelGrid>
 			
-			<h:commandButton value="View" action="#{staff.btnView()}">
-				
-			</h:commandButton>
-			<h:commandButton value="Insert" />
-			<h:commandButton value="Update" />
-			<h:commandButton value="Reset" />
+			<h:commandButton value="View" action="#{staff.btnView()}" />
+			<h:commandButton value="Insert" action="#{staff.btnInsert()}" />
+			<h:commandButton value="Update" action="#{staff.btnUpdate()}" />
+			<h:commandButton value="Reset" action="#{staff.btnReset()}" />
 		</h:form>	
 	</h:body> 
 </html>
