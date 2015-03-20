@@ -4,12 +4,17 @@ import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.RequestScoped;
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Named;
 
-@Named(value = "staffRegistration")
-@SessionScoped
+@Named(value = "staff")
+@RequestScoped
 public class StaffRegistrationBean implements Serializable{
 	private String id;
 	private String lastName;
@@ -23,6 +28,7 @@ public class StaffRegistrationBean implements Serializable{
 
 	private String status = "Nothing stored";
 	
+	private Connection conn;
 	private PreparedStatement pstmt;
 	
 	public StaffRegistrationBean() {
@@ -37,18 +43,57 @@ public class StaffRegistrationBean implements Serializable{
 			System.out.println("Driver loaded");
 
 			// Establish a connection
-			Connection conn = DriverManager.getConnection(
+			conn = DriverManager.getConnection(
 					"jdbc:mysql://localhost:3306/Week7", "drytuna", "Pa$$word");
 
 			// Create a Statement
-			pstmt = conn.prepareStatement("insert into Address (lastName,"
-					+ " firstName, mi, telephone, email, street, city, "
-					+ "state, zip) values (?, ?, ?, ?, ?, ?, ?, ?, ?)");
-		} catch (Exception ex) {
+			pstmt = conn.prepareStatement("insert into Staff (id, lastName,"
+					+ " mi, firstName, address, city, state,"
+					+ " telephone, email) values (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+		}
+		catch (Exception ex) {
 			System.out.println(ex);
 		}
 	}
-
+	
+	public void btnView() throws SQLException {
+		String query = "select * from Staff where id = '" + id +"';";
+		Statement stmt = conn.createStatement();
+		ResultSet rs = stmt.executeQuery(query);
+		while (rs.next()) {
+			setLastName(rs.getString("lastName"));
+			setMi(rs.getString("mi"));
+			setFirstName(rs.getString("firstName"));
+			setAddress(rs.getString("address"));
+			setCity(rs.getString("city"));
+			setState(rs.getString("state"));
+			setTelephone(rs.getString("telephone"));
+			setEmail(rs.getString("email"));
+		}
+		stmt.close();
+	}
+	
+	public String storeStaff() {
+		try {
+			pstmt.setString(1, getId());
+			pstmt.setString(2, getLastName());
+			pstmt.setString(3, getMi());
+			pstmt.setString(4, getFirstName());
+			pstmt.setString(5, getAddress());
+			pstmt.setString(6, getCity());
+			pstmt.setString(7, getState());
+			pstmt.setString(8, getTelephone());
+			pstmt.setString(9, getEmail());
+			pstmt.executeUpdate();
+			status = getFirstName() + " " + getLastName()
+					+ " is now registered in the database.";
+		} 
+		catch (Exception ex) {
+			status = ex.getMessage();
+		}
+		return "StaffStoredStatus";
+	}
+	
 	public String getId() {
 		return id;
 	}

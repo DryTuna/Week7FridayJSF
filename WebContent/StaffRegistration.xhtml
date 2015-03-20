@@ -9,62 +9,64 @@
 		<title>Staff Registration</title>
 	</h:head> 
 	<h:body> 
-		<h:form>
+		<h:form id="staff_form" >
 			<h1>Staff Information</h1>
 			
 			<h:panelGrid columns="2">
 				<h:outputLabel value="ID: " />
-				<h:inputText id="idInputText" >
-					<f:validateLength minimum="1" maximum="9"/>
+				<h:inputText id="idInputText" value="#{staff.id}">
+					<!-- <f:validateLength minimum="1" maximum="9"/> -->
 				</h:inputText>
 			</h:panelGrid>
 			
-			<h:panelGrid columns="6">
+			<h:panelGrid columns="6" >
 				<h:outputLabel value="First Name: " />
-				<h:inputText id="firstInputText" >
-					<f:validateLength minimum="2" maximum="15"/>
+				<h:inputText id="firstInputText" value="#{staff.firstName}">
+					<!-- <f:validateLength minimum="2" maximum="15"/> -->
 				</h:inputText>
 				<h:outputLabel value="Middle Initial: " />
-				<h:inputText id="middleInputText" >
-					<f:validateLength minimum="0" maximum="1"/>
+				<h:inputText id="middleInputText" value="#{staff.mi}">
+					<!-- <f:validateLength minimum="0" maximum="1"/> -->
 				</h:inputText>
 				<h:outputLabel value="Last Name: " />
-				<h:inputText id="lastInputText" >
-					<f:validateLength minimum="2" maximum="15"/>
+				<h:inputText id="lastInputText" value="#{staff.lastName}">
+					<!-- <f:validateLength minimum="2" maximum="15"/> -->
 				</h:inputText>
 			</h:panelGrid>
 			
 			<h:panelGrid columns="2">
 				<h:outputLabel value="Address: " />
-				<h:inputText id="addressInputText" >
-					<f:validateLength minimum="2" maximum="20"/>
+				<h:inputText id="addressInputText" value="#{staff.address}">
+					<!-- <f:validateLength minimum="2" maximum="20"/> -->
 				</h:inputText>		
 			</h:panelGrid>
 			
 			<h:panelGrid columns="4">
 				<h:outputLabel value="City: " />
-				<h:inputText id="cityInputText" >
-					<f:validateLength minimum="2" maximum="20"/>
+				<h:inputText id="cityInputText" value="#{staff.city}">
+					<!-- <f:validateLength minimum="2" maximum="20"/> -->
 				</h:inputText>
 				<h:outputLabel value="State: " />
-				<h:inputText id="stateInputText" >
-					<f:validateLength minimum="2" maximum="2"/>
+				<h:inputText id="stateInputText" value="#{staff.state}">
+					<!-- <f:validateLength minimum="2" maximum="2"/> -->
 				</h:inputText>
 			</h:panelGrid>
 			
 			<h:panelGrid columns="4">
 				<h:outputLabel value="Telephone: " />
-				<h:inputText id="telephoneInputText" >
-					<f:validateRegex pattern="[\d]{3}-[\d]{3}-[\d]{4}" />
+				<h:inputText id="telephoneInputText" value="#{staff.telephone}">
+					<!-- <f:validateRegex pattern="[\d]{10}" /> -->
 				</h:inputText>
 				<h:outputLabel value="Email: " />
-				<h:inputText id="emailInputText" >
-					<f:validateLength maximum="40" />
-					<f:validateRegex pattern="[\w]*@[\w]*.[\w]*" />
+				<h:inputText id="emailInputText" value="#{staff.email}">
+					<!-- <f:validateLength maximum="40" /> -->
+					<!-- <f:validateRegex pattern="[\w]*@[\w]*.[\w]*" /> -->
 				</h:inputText>
 			</h:panelGrid>
 			
-			<h:commandButton value="View" />
+			<h:commandButton value="View" action="#{staff.btnView()}">
+				
+			</h:commandButton>
 			<h:commandButton value="Insert" />
 			<h:commandButton value="Update" />
 			<h:commandButton value="Reset" />
