@@ -7,8 +7,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.context.RequestScoped;
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Named;
 
@@ -25,7 +23,7 @@ public class StaffRegistrationBean implements Serializable{
 	private String telephone;
 	private String email;
 
-	private String status = "Nothing stored";
+	private String status = "Database Not Connected";
 	
 	private PreparedStatement view, insert, update; 
 	private Connection conn;
@@ -44,8 +42,8 @@ public class StaffRegistrationBean implements Serializable{
 			// Establish a connection
 			conn = DriverManager.getConnection(
 					"jdbc:mysql://localhost:3306/Week7", "drytuna", "Pa$$word");
+			
 			status = "Database Connected.";
-
 		}
 		catch (Exception ex) {
 			System.out.println(ex);
@@ -53,11 +51,12 @@ public class StaffRegistrationBean implements Serializable{
 		}
 	}
 	
-	public void btnView() throws SQLException {
+	public void btnView() {
 		try {
 			view = conn.prepareStatement("select * from Staff where id = ?");
 			view.setString(1, getId());
 			ResultSet rs = view.executeQuery();
+			int count = 0;
 			while (rs.next()) {
 				setLastName(rs.getString("lastName"));
 				setMi(rs.getString("mi"));
@@ -67,10 +66,14 @@ public class StaffRegistrationBean implements Serializable{
 				setState(rs.getString("state"));
 				setTelephone(rs.getString("telephone"));
 				setEmail(rs.getString("email"));
+				count++;
 			}
 			rs.close();
 			view.close();
-			status = "Staff ID: " + getId() + " loaded successfully.";
+			if (count == 0)
+				status = "ID-" + getId() + " does not exist.";
+			else
+				status = "ID-" + getId() + " loaded successfully.";
 		}
 		catch (SQLException ex) {
 			status = ex.getMessage();
@@ -103,25 +106,17 @@ public class StaffRegistrationBean implements Serializable{
 	
 	public void btnUpdate() {
 		try {
+			view = conn.prepareStatement("select * from Staff where id = ?");
+			view.setString(1, getId());
+			ResultSet rs = view.executeQuery();
+
 			update = conn.prepareStatement("update Staff set "
 					+ " lastName = ?, mi = ?, firstName = ?,"
 					+ " address = ?, city = ?, state = ?,"
 					+ " telephone = ?, email = ? "
 					+ " where id = ?");
 			
-			/*
-			 * Cannot update current field with data from db then reupdate back into db at the same time
-			 * each method only handle one function
-			 * User has to manually hit view then modify value and then hit update
-			 * So no need to use view.execute query
-			 * Also, every statement has to be closed after you are done with it
-			 * connection can only prepare one statement at a time. So you have to put init statements in each method
-			 * Everytime you need to use it again, method will reinit it.
-			 * Make sure to put mysql jar file into glassfish installation lib folder. server need driver to connect to db too
-			 */
-			
-			view.setString(1, getId());
-			ResultSet rs = view.executeQuery();
+			int count = 0;
 			while (rs.next()) {
 				update.setString(1, rs.getString("lastName"));
 				update.setString(2, rs.getString("mi"));
@@ -131,40 +126,47 @@ public class StaffRegistrationBean implements Serializable{
 				update.setString(6, rs.getString("state"));
 				update.setString(7, rs.getString("telephone"));
 				update.setString(8, rs.getString("email"));
+				count++;
 			}
+			
+			if (count > 0) {
+				update.setString(9, getId());
+				
+				if (lastName != null && !lastName.isEmpty())
+					update.setString(1, getLastName());
+				
+				if (mi != null && !mi.isEmpty())
+					update.setString(2, getMi());
+				
+				if (firstName != null && !firstName.isEmpty())
+					update.setString(3, getFirstName());
+				
+				if (address != null && !address.isEmpty())
+					update.setString(4, getAddress());
+				
+				if (city != null && !city.isEmpty())
+					update.setString(5, getCity());
+				
+				if (state != null && !state.isEmpty())
+					update.setString(6, getState());
+				
+				if (telephone != null && !telephone.isEmpty())
+					update.setString(7, getTelephone());
+				
+				if (email != null && !email.isEmpty())
+					update.setString(8, getEmail());
+				
+				update.executeUpdate();
+				status = getFirstName() + " " + getLastName()
+						+ " is now updated in the database.";
+			}
+			else
+				status = "ID-" + getId() + " does not exist."
+					+ " Please use INSERT instead.";
+			
 			rs.close();
-			view.close();
-			update.setString(9, getId());
-			
-			if (lastName != null && !lastName.isEmpty())
-				update.setString(1, getLastName());
-			
-			if (mi != null && !mi.isEmpty())
-				update.setString(2, getMi());
-			
-			if (firstName != null && !firstName.isEmpty())
-				update.setString(3, getFirstName());
-			
-			if (address != null && !address.isEmpty())
-				update.setString(4, getAddress());
-			
-			if (city != null && !city.isEmpty())
-				update.setString(5, getCity());
-			
-			if (state != null && !state.isEmpty())
-				update.setString(6, getState());
-			
-			if (telephone != null && !telephone.isEmpty())
-				update.setString(7, getTelephone());
-			
-			if (email != null && !email.isEmpty())
-				update.setString(8, getEmail());
-			
-			System.out.println(update.toString());
-			update.executeUpdate();
 			update.close();
-			status = getFirstName() + " " + getLastName()
-					+ " is now updated in the database.";
+			view.close();
 		}
 		catch (Exception ex) {
 			status = ex.getMessage();
@@ -193,7 +195,7 @@ public class StaffRegistrationBean implements Serializable{
 	}
 
 	public String getLastName() {
-		if (lastName != null) {
+		if (lastName != null && !lastName.isEmpty()) {
 			char temp = lastName.toUpperCase().charAt(0);
 			return temp + lastName.toLowerCase().substring(1);
 		}
@@ -205,7 +207,9 @@ public class StaffRegistrationBean implements Serializable{
 	}
 
 	public String getMi() {
-		return mi.toUpperCase();
+		if (mi != null)
+			return mi.toUpperCase();
+		return mi;
 	}
 
 	public void setMi(String mi) {
@@ -213,7 +217,7 @@ public class StaffRegistrationBean implements Serializable{
 	}
 
 	public String getFirstName() {
-		if (firstName != null) {
+		if (firstName != null && !firstName.isEmpty()) {
 			char temp = firstName.toUpperCase().charAt(0);
 			return temp + firstName.toLowerCase().substring(1);
 		}
@@ -233,11 +237,11 @@ public class StaffRegistrationBean implements Serializable{
 	}
 
 	public String getCity() {
-		if (city != null) {
-			char temp = lastName.toUpperCase().charAt(0);
+		if (city != null && !city.isEmpty()) {
+			char temp = city.toUpperCase().charAt(0);
 			if (city.length() == 1)
 				return temp + "";
-			return temp + lastName.toLowerCase().substring(1);
+			return temp + city.toLowerCase().substring(1);
 		}
 		return city;
 	}
@@ -247,7 +251,9 @@ public class StaffRegistrationBean implements Serializable{
 	}
 
 	public String getState() {
-		return state.toUpperCase();
+		if (state != null)
+			return state.toUpperCase();
+		return state;
 	}
 
 	public void setState(String state) {
