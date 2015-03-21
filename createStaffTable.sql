@@ -1,7 +1,7 @@
-/*
+
 drop database Week7;
+
 create database Week7;
-*/
 
 use Week7;
 drop table if exists Staff;

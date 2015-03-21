@@ -6,6 +6,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Named;
@@ -41,16 +42,55 @@ public class StaffRegistrationBean implements Serializable{
 
 			// Establish a connection
 			conn = DriverManager.getConnection(
-					"jdbc:mysql://localhost:3306/Week7", "drytuna", "Pa$$word");
+					"jdbc:mysql://localhost:3306", "drytuna", "Pa$$word");
 			
+			initializeDB(conn.createStatement());
+
 			status = "Database Connected.";
 		}
-		catch (Exception ex) {
+		catch (SQLException ex) {
+			System.out.println(ex);
+			status = ex.getMessage();
+		}
+		catch (ClassNotFoundException ex) {
 			System.out.println(ex);
 			status = ex.getMessage();
 		}
 	}
 	
+	/** Create Database */
+	public void initializeDB(Statement stmt) throws SQLException{
+		stmt.executeUpdate("create database Week7");
+		stmt.executeUpdate("use Week7");
+		stmt.executeUpdate("create table Staff ("
+				+ "id char(9) not null, "
+				+ "lastName varchar(15), "
+				+ "mi char(1), "
+				+ "firstName varchar(15), "
+				+ "address varchar(20), "
+				+ "city varchar(20), "
+				+ "state char(2), "
+				+ "telephone char(10), "
+				+ "email varchar(40), "
+				+ "primary key (id))");
+		stmt.executeUpdate("insert into Staff values ("
+				+ "'111', 'Doji', '', 'Shuten', '12345 Ayakashi Dr.', 'Tokyo', "
+				+ "'GG', '9876540123', 'shutendoji@ayakashi.gg');");
+		stmt.executeUpdate("insert into Staff values ("
+				+ "'222', 'Doji', '', 'Giri', '23456 Ayakashi Dr.', 'Tokyo', "
+				+ "'GG', '6547890123', 'dojigiri@ayakashi.gg');");
+		stmt.executeUpdate("insert into Staff values ("
+				+ "'333', 'Takeda', '', 'Shingen', '34567 Ayakashi Dr.', 'Tokyo', "
+				+ "'GG', '1236540987', 'shingentakeda@ayakashi.gg');");
+		stmt.executeUpdate("insert into Staff values ("
+				+ "'444', 'Hime', '', 'Kushinada', '45678 Ayakashi Dr.', 'Tokyo', "
+				+ "'GG', '3214568790', 'kushinadahime@ayakashi.gg');");
+		
+		stmt.close();
+		System.out.println("Database Created. Table Created.");
+	}
+	
+	/** View Method for view button */
 	public void btnView() {
 		try {
 			view = conn.prepareStatement("select * from Staff where id = ?");
@@ -80,6 +120,7 @@ public class StaffRegistrationBean implements Serializable{
 		}
 	}
 
+	/** Insert Method for insert button */
 	public void btnInsert(){
 		try {
 			insert = conn.prepareStatement("insert into Staff (id, lastName,"
@@ -104,6 +145,7 @@ public class StaffRegistrationBean implements Serializable{
 		}
 	}
 	
+	/** Update Method for update button */
 	public void btnUpdate() {
 		try {
 			view = conn.prepareStatement("select * from Staff where id = ?");
@@ -173,6 +215,7 @@ public class StaffRegistrationBean implements Serializable{
 		}
 	}
 	
+	/** Reset Method for reset button */
 	public void btnReset() {
 		id = null;
 		firstName = null;
