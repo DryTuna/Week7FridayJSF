@@ -172,15 +172,15 @@ public class StaffRegistrationBean implements Serializable{
 	}
 	
 	public void btnReset() {
-		id = "";
-		firstName = "";
-		mi = "";
-		lastName = "";
-		address = "";
-		city = "";
-		state = "";
-		telephone = "";
-		email = "";
+		id = null;
+		firstName = null;
+		mi = null;
+		lastName = null;
+		address = null;
+		city = null;
+		state = null;
+		telephone = null;
+		email = null;
 		status = "Database Connected";
 	}
 	
@@ -193,6 +193,10 @@ public class StaffRegistrationBean implements Serializable{
 	}
 
 	public String getLastName() {
+		if (lastName != null) {
+			char temp = lastName.toUpperCase().charAt(0);
+			return temp + lastName.toLowerCase().substring(1);
+		}
 		return lastName;
 	}
 
@@ -201,7 +205,7 @@ public class StaffRegistrationBean implements Serializable{
 	}
 
 	public String getMi() {
-		return mi;
+		return mi.toUpperCase();
 	}
 
 	public void setMi(String mi) {
@@ -209,6 +213,10 @@ public class StaffRegistrationBean implements Serializable{
 	}
 
 	public String getFirstName() {
+		if (firstName != null) {
+			char temp = firstName.toUpperCase().charAt(0);
+			return temp + firstName.toLowerCase().substring(1);
+		}
 		return firstName;
 	}
 
@@ -225,6 +233,12 @@ public class StaffRegistrationBean implements Serializable{
 	}
 
 	public String getCity() {
+		if (city != null) {
+			char temp = lastName.toUpperCase().charAt(0);
+			if (city.length() == 1)
+				return temp + "";
+			return temp + lastName.toLowerCase().substring(1);
+		}
 		return city;
 	}
 
@@ -233,7 +247,7 @@ public class StaffRegistrationBean implements Serializable{
 	}
 
 	public String getState() {
-		return state;
+		return state.toUpperCase();
 	}
 
 	public void setState(String state) {

@@ -26,9 +26,9 @@
 				<h:outputLabel value="First Name: " />
 				<h:inputText id="firstInputText" value="#{staff.firstName}"
 					requiredMessage="First Name is required"
-					validatorMessage="First Name max length is 15 letters"
+					validatorMessage="First Name must be between 2 - 15 letters"
 					required="#{not empty param.insert}">
-					<f:validateRegex pattern="[a-zA-Z]{0,15}"/>
+					<f:validateRegex pattern="([a-zA-Z]{2,15}|[a-zA-Z]{0})"/>
 				</h:inputText>
 				<h:outputLabel value="Middle Initial: " />
 				<h:inputText id="middleInputText" value="#{staff.mi}"
@@ -38,9 +38,9 @@
 				<h:outputLabel value="Last Name: " />
 				<h:inputText id="lastInputText" value="#{staff.lastName}"
 					requiredMessage="Last Name is required"
-					validatorMessage="Last Name max length is 15 letters"
+					validatorMessage="Last Name must be between 2 - 15 letters"
 					required="#{not empty param.insert}">
-					<f:validateRegex pattern="[a-zA-Z]{0,15}"/>
+					<f:validateRegex pattern="([a-zA-Z]{2,15}|[a-zA-Z]{0})"/>
 				</h:inputText>
 			</h:panelGrid>
 			
