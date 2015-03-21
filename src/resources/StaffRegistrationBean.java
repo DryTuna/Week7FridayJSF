@@ -27,7 +27,8 @@ public class StaffRegistrationBean implements Serializable{
 
 	private String status = "Nothing stored";
 	
-	private PreparedStatement view, insert, update;
+	private PreparedStatement view, insert, update; 
+	private Connection conn;
 	
 	public StaffRegistrationBean() {
 		initializeJdbc();
@@ -41,23 +42,10 @@ public class StaffRegistrationBean implements Serializable{
 			System.out.println("Driver loaded");
 
 			// Establish a connection
-			Connection conn = DriverManager.getConnection(
+			conn = DriverManager.getConnection(
 					"jdbc:mysql://localhost:3306/Week7", "drytuna", "Pa$$word");
 			status = "Database Connected.";
 
-			// Create Statements
-			view = conn.prepareStatement("select * from Staff where id = ?");
-			
-			insert = conn.prepareStatement("insert into Staff (id, lastName,"
-					+ " mi, firstName, address, city, state,"
-					+ " telephone, email) values (?, ?, ?, ?, ?, ?, ?, ?, ?)");
-			
-			update = conn.prepareStatement("update Staff set "
-					+ " lastName = ?, mi = ?, firstName = ?,"
-					+ " address = ?, city = ?, state = ?,"
-					+ " telephone = ?, email = ? "
-					+ " where id = ?");
-			
 		}
 		catch (Exception ex) {
 			System.out.println(ex);
@@ -67,6 +55,7 @@ public class StaffRegistrationBean implements Serializable{
 	
 	public void btnView() throws SQLException {
 		try {
+			view = conn.prepareStatement("select * from Staff where id = ?");
 			view.setString(1, getId());
 			ResultSet rs = view.executeQuery();
 			while (rs.next()) {
@@ -79,6 +68,8 @@ public class StaffRegistrationBean implements Serializable{
 				setTelephone(rs.getString("telephone"));
 				setEmail(rs.getString("email"));
 			}
+			rs.close();
+			view.close();
 			status = "Staff ID: " + getId() + " loaded successfully.";
 		}
 		catch (SQLException ex) {
@@ -86,8 +77,11 @@ public class StaffRegistrationBean implements Serializable{
 		}
 	}
 
-	public void btnInsert() {
+	public void btnInsert(){
 		try {
+			insert = conn.prepareStatement("insert into Staff (id, lastName,"
+					+ " mi, firstName, address, city, state,"
+					+ " telephone, email) values (?, ?, ?, ?, ?, ?, ?, ?, ?)");
 			insert.setString(1, getId());
 			insert.setString(2, getLastName());
 			insert.setString(3, getMi());
@@ -98,6 +92,7 @@ public class StaffRegistrationBean implements Serializable{
 			insert.setString(8, getTelephone());
 			insert.setString(9, getEmail());
 			insert.executeUpdate();
+			insert.close();
 			status = getFirstName() + " " + getLastName()
 					+ " is now registered in the database.";
 		} 
@@ -108,6 +103,23 @@ public class StaffRegistrationBean implements Serializable{
 	
 	public void btnUpdate() {
 		try {
+			update = conn.prepareStatement("update Staff set "
+					+ " lastName = ?, mi = ?, firstName = ?,"
+					+ " address = ?, city = ?, state = ?,"
+					+ " telephone = ?, email = ? "
+					+ " where id = ?");
+			
+			/*
+			 * Cannot update current field with data from db then reupdate back into db at the same time
+			 * each method only handle one function
+			 * User has to manually hit view then modify value and then hit update
+			 * So no need to use view.execute query
+			 * Also, every statement has to be closed after you are done with it
+			 * connection can only prepare one statement at a time. So you have to put init statements in each method
+			 * Everytime you need to use it again, method will reinit it.
+			 * Make sure to put mysql jar file into glassfish installation lib folder. server need driver to connect to db too
+			 */
+			
 			view.setString(1, getId());
 			ResultSet rs = view.executeQuery();
 			while (rs.next()) {
@@ -120,7 +132,8 @@ public class StaffRegistrationBean implements Serializable{
 				update.setString(7, rs.getString("telephone"));
 				update.setString(8, rs.getString("email"));
 			}
-			
+			rs.close();
+			view.close();
 			update.setString(9, getId());
 			
 			if (lastName != null && !lastName.isEmpty())
@@ -149,6 +162,7 @@ public class StaffRegistrationBean implements Serializable{
 			
 			System.out.println(update.toString());
 			update.executeUpdate();
+			update.close();
 			status = getFirstName() + " " + getLastName()
 					+ " is now updated in the database.";
 		}
@@ -167,6 +181,7 @@ public class StaffRegistrationBean implements Serializable{
 		state = "";
 		telephone = "";
 		email = "";
+		status = "Database Connected";
 	}
 	
 	public String getId() {
