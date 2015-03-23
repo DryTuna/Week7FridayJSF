@@ -1,3 +1,8 @@
+/*
+ * Name: Duy Tran
+ * Date: March 20th, 2015
+ */
+
 package resources;
 
 import java.io.Serializable;
@@ -7,8 +12,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.context.RequestScoped;
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Named;
 
@@ -158,15 +161,48 @@ public class StaffRegistrationBean implements Serializable{
 	}
 	
 	public void btnReset() {
-		id = "";
-		firstName = "";
-		mi = "";
-		lastName = "";
-		address = "";
-		city = "";
-		state = "";
-		telephone = "";
-		email = "";
+		id = null;
+		firstName = null;
+		mi = null;
+		lastName = null;
+		address = null;
+		city = null;
+		state = null;
+		telephone = null;
+		email = null;
+	}
+	
+	public String getResponse() {
+		String result = "";
+		
+		if (id == null || id.isEmpty())
+			result += "ID, ";
+		
+		if (lastName == null || lastName.isEmpty())
+			result += "Last Name, ";
+		
+		if (mi == null || mi.isEmpty())
+			result += "Middle Initial, ";
+		
+		if (firstName == null || firstName.isEmpty())
+			result += "First Name, ";
+		
+		if (address == null || address.isEmpty())
+			result += "Address, ";
+		
+		if (city == null || city.isEmpty())
+			result += "City, ";
+		
+		if (state == null || state.isEmpty())
+			result += "State, ";
+		
+		if (telephone == null || telephone.isEmpty())
+			result += "Telephone, ";
+		
+		if (email == null || email.isEmpty())
+			result += "Email, ";
+		
+		return result;
 	}
 	
 	public String getId() {
@@ -178,6 +214,10 @@ public class StaffRegistrationBean implements Serializable{
 	}
 
 	public String getLastName() {
+		if (lastName != null) {
+			String temp = lastName.toUpperCase().charAt(0) + "";
+			return temp + lastName.toLowerCase().substring(1);
+		}
 		return lastName;
 	}
 
@@ -186,6 +226,8 @@ public class StaffRegistrationBean implements Serializable{
 	}
 
 	public String getMi() {
+		if (mi != null)
+			return mi.toUpperCase();
 		return mi;
 	}
 
@@ -194,6 +236,10 @@ public class StaffRegistrationBean implements Serializable{
 	}
 
 	public String getFirstName() {
+		if (firstName != null) {
+			String temp = firstName.toUpperCase().charAt(0) + "";
+			return temp + firstName.toLowerCase().substring(1);
+		}
 		return firstName;
 	}
 
@@ -210,6 +256,10 @@ public class StaffRegistrationBean implements Serializable{
 	}
 
 	public String getCity() {
+		if (city != null) {
+			String temp = city.toUpperCase().charAt(0) + "";
+			return temp + city.toLowerCase().substring(1);
+		}
 		return city;
 	}
 
@@ -218,6 +268,8 @@ public class StaffRegistrationBean implements Serializable{
 	}
 
 	public String getState() {
+		if (state != null)
+			return state.toUpperCase();
 		return state;
 	}
 

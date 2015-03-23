@@ -7,67 +7,114 @@
 
 	<h:head>
 		<title>Staff Registration</title>
+
 	</h:head> 
 	<h:body> 
-		<h:form id="staff_form" >
+		<h:form id="staff_form">
 			<h1>Staff Information</h1>
 			
 			<h:panelGrid columns="2">
 				<h:outputLabel value="ID: " />
-				<h:inputText id="idInputText" value="#{staff.id}">
-					<!-- <f:validateLength minimum="1" maximum="9"/> -->
+				<h:inputText id="idInputText" value="#{staff.id}"
+					style=""
+					required="#{not empty param.view || param.insert || param.update}"
+					requiredMessage="ID is required"
+					validatorMessage="ID max length is 9 characters">
+					<f:validateLength maximum="9"/>
 				</h:inputText>
 			</h:panelGrid>
 			
 			<h:panelGrid columns="6" >
 				<h:outputLabel value="First Name: " />
-				<h:inputText id="firstInputText" value="#{staff.firstName}">
-					<!-- <f:validateLength minimum="2" maximum="15"/> -->
+				<h:inputText id="firstInputText" value="#{staff.firstName}"
+					required="#{not empty param.insert}"
+					requiredMessage="First Name is required"
+					validatorMessage="First Name max length is 15 characters">
+					<f:validateLength maximum="15"/>
 				</h:inputText>
 				<h:outputLabel value="Middle Initial: " />
-				<h:inputText id="middleInputText" value="#{staff.mi}">
-					<!-- <f:validateLength minimum="0" maximum="1"/> -->
+				<h:inputText id="middleInputText" value="#{staff.mi}"
+					style="width:15px"
+					validatorMessage="Middle Initial can only have 1 character">
+					<f:validateRegex pattern="([a-zA-Z]{0,1})"/>
 				</h:inputText>
 				<h:outputLabel value="Last Name: " />
-				<h:inputText id="lastInputText" value="#{staff.lastName}">
-					<!-- <f:validateLength minimum="2" maximum="15"/> -->
+				<h:inputText id="lastInputText" value="#{staff.lastName}"
+					required="#{not empty param.insert}"
+					requiredMessage="Last Name is required"
+					validatorMessage="Last Name max length is 15 characters">
+					<f:validateLength maximum="15"/>
 				</h:inputText>
 			</h:panelGrid>
 			
 			<h:panelGrid columns="2">
 				<h:outputLabel value="Address: " />
-				<h:inputText id="addressInputText" value="#{staff.address}">
-					<!-- <f:validateLength minimum="2" maximum="20"/> -->
+				<h:inputText id="addressInputText" value="#{staff.address}"
+					required="#{not empty param.insert}"
+					requiredMessage="Address is required"
+					validatorMessage="Address max length is 20 characters">
+					<f:validateLength maximum="20"/>
 				</h:inputText>		
 			</h:panelGrid>
 			
 			<h:panelGrid columns="4">
 				<h:outputLabel value="City: " />
-				<h:inputText id="cityInputText" value="#{staff.city}">
-					<!-- <f:validateLength minimum="2" maximum="20"/> -->
+				<h:inputText id="cityInputText" value="#{staff.city}"
+					required="#{not empty param.insert}"
+					requiredMessage="City is required"
+					validatorMessage="City max length is 20 characters">
+					<f:validateLength maximum="20"/>
 				</h:inputText>
 				<h:outputLabel value="State: " />
-				<h:inputText id="stateInputText" value="#{staff.state}">
-					<!-- <f:validateLength minimum="2" maximum="2"/> -->
+				<h:inputText id="stateInputText" value="#{staff.state}"
+					style="width:25px"
+					required="#{not empty param.insert}"
+					requiredMessage="State is required"
+					validatorMessage="State must be 2 letters">
+					<f:validateRegex pattern="([a-zA-Z]{2}|[a-zA-Z]{0})"/>
 				</h:inputText>
 			</h:panelGrid>
 			
 			<h:panelGrid columns="4">
 				<h:outputLabel value="Telephone: " />
-				<h:inputText id="telephoneInputText" value="#{staff.telephone}">
-					<!-- <f:validateRegex pattern="[\d]{10}" /> -->
+				<h:inputText id="telephoneInputText" value="#{staff.telephone}"
+					required="#{not empty param.insert}"
+					requiredMessage="Telephone is required"
+					validatorMessage="Telephone must be 10 digits">
+					<f:validateRegex pattern="([\d]{10}|[\d]{0})" />
 				</h:inputText>
 				<h:outputLabel value="Email: " />
-				<h:inputText id="emailInputText" value="#{staff.email}">
-					<!-- <f:validateLength maximum="40" /> -->
-					<!-- <f:validateRegex pattern="[\w]*@[\w]*.[\w]*" /> -->
+				<h:inputText id="emailInputText" value="#{staff.email}"
+					style="width:250px"
+					required="#{not empty param.insert}"
+					requiredMessage="Email is required"
+					validatorMessage="Email Address maximum length is 40 characters">
+					<f:validateLength maximum="40" />
 				</h:inputText>
 			</h:panelGrid>
 			
-			<h:commandButton value="View" action="#{staff.btnView()}" />
-			<h:commandButton value="Insert" action="#{staff.btnInsert()}" />
-			<h:commandButton value="Update" action="#{staff.btnUpdate()}" />
-			<h:commandButton value="Reset" action="#{staff.btnReset()}" />
+			<h:commandButton value="View" action="#{staff.btnView()}" >
+				<f:param name="view" value="true"/>
+			</h:commandButton>
+			<h:commandButton value="Insert" action="#{staff.btnInsert()}" >
+				<f:param name="insert" value="true"/>
+			</h:commandButton>
+			<h:commandButton value="Update" action="#{staff.btnUpdate()}" >
+				<f:param name="update" value="true"/>
+			</h:commandButton>
+			<h:commandButton value="Reset" action="#{staff.btnReset()}" >
+			</h:commandButton>
+			
+			<br/>
+			<h:message for="idInputText" style="color:red" /><br/>
+			<h:message for="firstInputText" style="color:red" /><br/>
+			<h:message for="middleInputText" style="color:red" /><br/>
+			<h:message for="lastInputText" style="color:red" /><br/>
+			<h:message for="addressInputText" style="color:red" /><br/>
+			<h:message for="cityInputText" style="color:red" /><br/>
+			<h:message for="stateInputText" style="color:red" /><br/>
+			<h:message for="telephoneInputText" style="color:red" /><br/>
+			<h:message for="emailInputText" style="color:red" /><br/>
 		</h:form>	
 	</h:body> 
 </html>
