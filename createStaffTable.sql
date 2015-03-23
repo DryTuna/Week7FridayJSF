@@ -1,4 +1,10 @@
+<<<<<<< HEAD
 /*drop database Week7;*/
+=======
+
+drop database Week7;
+
+>>>>>>> origin/master
 create database Week7;
 
 use Week7;
